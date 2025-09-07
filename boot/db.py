@@ -491,6 +491,23 @@ def add_comment(post_id, user_id, content, parent_comment_id=None, media_data=No
             conn.close()
 
 
+def get_comment_count(post_id):
+    """Gets the number of comments for a specific post."""
+    conn = get_db_connection()
+    if conn is None:
+        return 0
+    
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT COUNT(*) FROM comments WHERE post_id = %s", (post_id,))
+            return cursor.fetchone()[0]
+    except (Exception, Error) as error:
+        print("Error getting comment count:", error)
+        return 0
+    finally:
+        if conn:
+            conn.close()
+
 def get_post_and_comments(post_id):
     conn = get_db_connection()
     if conn is None:
